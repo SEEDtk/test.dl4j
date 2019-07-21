@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+import org.deeplearning4j.nn.conf.dropout.GaussianDropout;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
@@ -58,10 +59,10 @@ public class App
                 .weightInit(WeightInit.XAVIER)
                 .biasUpdater(new Sgd(0.1))
                 .updater(new Adam())
-                .l2(0.01)
                 .list()
                     .layer(0, new DenseLayer.Builder().nIn(labelIndex).nOut(numClasses).build())
-                    .layer(1, new DenseLayer.Builder().nIn(numClasses).nOut(layerWidth).build())
+                    .layer(1, new DenseLayer.Builder().nIn(numClasses).nOut(layerWidth)
+                            .dropOut(new GaussianDropout(0.6)).build())
                     .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                                     .activation(Activation.SOFTMAX)
                                     .nIn(layerWidth).nOut(numClasses).build())
